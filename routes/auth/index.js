@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../../app/models/user');
-// const JWT = require('jsonwebtoken');
+const JWT = require('jsonwebtoken');
 // const passport = require('passport');
 // require('../../config/passport.js')(passport);
 
@@ -9,10 +9,14 @@ const authRoutes = express.Router();
 authRoutes.post('/register', (req, res) => {
 
     const {email, password} = req.body;
-
+    
     if(!email || !password) {
         res.json({success: false, message: 'Please enter an email and password'});
     } else {
+        
+        const user = User.findOne({ email });
+
+        if (user) return res.json({success: false, message: "Account already registered with this email"});
 
         const newUser = new User({
             email,
@@ -45,6 +49,7 @@ authRoutes.post('/authenticate', async (req, res) => {
             return res.send({success: false, message: "Authentication failed. User not found"});
         }
 
+
         const isMatch = await user.comparePassword(req.body.password);
 
         if (!isMatch) {
@@ -55,6 +60,7 @@ authRoutes.post('/authenticate', async (req, res) => {
             expiresIn: 1000
         });
 
+        
         return res.json({success: true, token: "Bearer " + token})   
     }
     catch(err) {

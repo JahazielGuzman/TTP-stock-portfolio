@@ -15,7 +15,6 @@ app
     .prepare()
     .then(() => {
 
-
         const server = express();
 
         server.use(express.urlencoded({extended: false}));
