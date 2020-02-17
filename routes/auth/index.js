@@ -39,7 +39,7 @@ authRoutes.post('/register', (req, res) => {
 });
 
 // Authenticate
-authRoutes.post('/authenticate', async (req, res) => {
+authRoutes.post('/login', async (req, res) => {
 
     try {
 
@@ -60,7 +60,7 @@ authRoutes.post('/authenticate', async (req, res) => {
             expiresIn: 1000
         });
 
-        
+
         return res.json({success: true, token: "Bearer " + token})   
     }
     catch(err) {
