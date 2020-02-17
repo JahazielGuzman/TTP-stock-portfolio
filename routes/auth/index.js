@@ -13,10 +13,6 @@ authRoutes.post('/register', (req, res) => {
     if(!email || !password) {
         res.json({success: false, message: 'Please enter an email and password'});
     } else {
-        
-        const user = User.findOne({ email });
-
-        if (user) return res.json({success: false, message: "Account already registered with this email"});
 
         const newUser = new User({
             email,
@@ -28,7 +24,14 @@ authRoutes.post('/register', (req, res) => {
         newUser.save((err) => {
 
             if (err) {
-                return res.json({success: false, message: err});
+
+                switch(err.code) {
+                    case 11000:
+                        return res.json({success: false, message: "User account already exists"});
+                    default:
+                        return res.json({success: false, message: err});
+
+                }
             }
             return res.json({success: true, message: `Successfully created new user`});
             
