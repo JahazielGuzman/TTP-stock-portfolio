@@ -38,7 +38,10 @@ class Portfolio extends Component {
             })
             .then(res => res.json())
             .then(data => {
-                this.setState({portfolio: data.portfolio});
+                if (data.success)
+                    this.setState({portfolio: data.portfolio});
+                else
+                    this.setState({error: data.message});
             });     
         }
     }

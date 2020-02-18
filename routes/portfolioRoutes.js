@@ -27,7 +27,7 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
     }
     catch (err) {
         
-        res.status(400).send({success: false, message: "Could not get portfolio data"});
+        res.status(400).send({success: false, message: err.message});
     }
     
 });
