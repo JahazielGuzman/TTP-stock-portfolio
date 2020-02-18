@@ -11,7 +11,7 @@ export default class Login extends Component {
     state = {
         email: "",
         password: "",
-        loggedin: false
+        errors: ""
     }
     
     constructor(props) {
@@ -45,8 +45,14 @@ export default class Login extends Component {
         })
         .then(res => res.json())
         .then(data => {
-            localStorage.setItem('auth_token', data.token);
-            Router.push('/portfolio');
+            if (data.success) {
+
+                localStorage.setItem('auth_token', data.token);
+                Router.push('/portfolio');
+            }
+            else
+                this.setState({errors: data.message});
+
         });       
     }
 
@@ -54,6 +60,7 @@ export default class Login extends Component {
 
         return (
           <div className="Login">
+            {this.state.errors ? <div style={{color: red}}>{this.state.errors}</div> : ""}
             <form onSubmit={this.handleSubmit}>
               <FormGroup controlId="email" bsSize="large">
                 <FormLabel>Email</FormLabel>
