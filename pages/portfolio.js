@@ -24,7 +24,7 @@ class Portfolio extends Component {
 
         if (!authToken && !authToken.includes("Bearer")) {
 
-            router.push('/login');
+            router.push('/');
         }
         else {
             // get the portfolio for current user

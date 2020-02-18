@@ -48,7 +48,7 @@ class Register extends Component {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    Router.push('/login');
+                    Router.push('/');
                 });       
     }
 

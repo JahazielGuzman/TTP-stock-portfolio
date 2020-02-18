@@ -23,7 +23,7 @@ class Transactions extends Component {
 
         if (!authToken && !authToken.includes("Bearer")) {
 
-            router.push('/login');
+            router.push('/');
         }
         else {
             // get the transactions for current user
