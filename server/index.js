@@ -3,6 +3,9 @@ const next = require('next');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoutes = require('../routes/auth');
+const portfolioRoutes = require('../routes/portfolioRoutes');
+const passport = require('passport');
+require('../config/passport.js')(passport);
 dotenv.config();
 
 const PORT = process.env.PORT || 3000
@@ -19,7 +22,10 @@ app
 
         server.use(express.urlencoded({extended: false}));
         server.use(express.json());
+        server.use(passport.initialize());
+
         server.use('/api/auth', authRoutes);
+        server.use('/api/', portfolioRoutes);
 
         mongoose.connect(process.env.MONGO_URL,  {useNewUrlParser: true, useUnifiedTopology: true});
 

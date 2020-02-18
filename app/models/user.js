@@ -2,22 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 // User schema
-const StockSchema = new mongoose.Schema({
-
-    ticker: {
-        type: String,
-        required: true,
-        uppercase: true
-    },
-    quantity: {
-        type: Number,
-        required: true
-    },
-    price: {
-        type: Number,
-        required: true
-    }
-});
 
 const UserSchema = new mongoose.Schema({
 
@@ -31,8 +15,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    balance: {
+        type: Number,
+        default: 5000.00
+    },
     stocks: {
-        type: [StockSchema],
+        type: Array,
         default: []
     }
 });
@@ -60,6 +48,43 @@ UserSchema.pre('save', async function (next) {
 UserSchema.methods.comparePassword = function(pw) {
 
     return bcrypt.compare(pw, this.password);
+}
+
+UserSchema.methods.transactions = function() {
+
+    return this.stocks;
+}
+
+UserSchema.methods.buyStock = function(ticker, quantity, price) {
+
+    const cost = quantity.toFixed(5) * price;
+
+    if (cost < this.balance) {
+        
+        this.balance -= cost;
+        this.stocks.push({ticker, quantity, cost});
+    }
+
+    else {
+        throw new Error({success: false, message: "Not enough money to buy stock"});
+    }
+}
+
+UserSchema.methods.portfolio = function() {
+
+    const portfolio = {};
+
+    for (stock of this.stocks) {
+
+        if (!portfolio[stock.ticker]) {
+
+            portfolio[stock.ticker] = {ticker: stock.ticker, quantity: 0, value: 0}
+        }
+
+        portfolio[stock.ticker].quantity += stock.quantity;
+    }
+
+    return Object.values(portfolio);
 }
 
 module.exports = mongoose.model('User', UserSchema);

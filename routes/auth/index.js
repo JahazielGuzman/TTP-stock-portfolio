@@ -1,8 +1,6 @@
 const express = require('express');
 const User = require('../../app/models/user');
 const JWT = require('jsonwebtoken');
-// const passport = require('passport');
-// require('../../config/passport.js')(passport);
 
 const authRoutes = express.Router();
 
@@ -59,9 +57,7 @@ authRoutes.post('/login', async (req, res) => {
             return res.send({success: false, message: `AUthentication failed: Password did not match`})
         }
 
-        const token = JWT.sign({_id: user._id}, process.env.JWT_SECRET, {
-            expiresIn: 1000
-        });
+        const token = JWT.sign({_id: user._id}, process.env.JWT_SECRET);
 
 
         return res.json({success: true, token: "Bearer " + token})   
