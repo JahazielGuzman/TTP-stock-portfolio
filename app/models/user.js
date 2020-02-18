@@ -69,7 +69,7 @@ UserSchema.methods.buyStock = function(ticker, quantity, price) {
     }
 
     else {
-        throw new Error({success: false, message: "Not enough money to buy stock"});
+        throw new Error("Not enough money to buy stock");
     }
 }
 
