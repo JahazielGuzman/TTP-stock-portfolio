@@ -52,9 +52,6 @@ export default class Login extends Component {
 
     render() {
 
-        console.log(process.env.REACT_APP_BACKEND);
-
-
         return (
           <div className="Login">
             <form onSubmit={this.handleSubmit}>
