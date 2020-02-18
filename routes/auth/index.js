@@ -34,9 +34,7 @@ authRoutes.post('/register', (req, res) => {
                 }
             }
 
-        const token = JWT.sign({_id: newUser._id}, process.env.JWT_SECRET);
-
-        return res.status(200).json({success: true, token: "Bearer " + token})   
+        return res.status(200).json({success: true})   
             
         })
     }

@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('../routes/auth');
 const portfolioRoutes = require('../routes/portfolioRoutes');
 const passport = require('passport');
+const cors = require('cors');
 require('../config/passport.js')(passport);
 dotenv.config();
 
@@ -20,6 +21,7 @@ app
 
         const server = express();
 
+        server.options('*', cors());
         server.use(express.urlencoded({extended: false}));
         server.use(express.json());
         server.use(passport.initialize());

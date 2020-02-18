@@ -46,8 +46,7 @@ export default class Login extends Component {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    localStorage.setItem('auth_token', data.token);
-                    Router.push('/portfolio');
+                    Router.push('/login');
                 });       
     }
 
