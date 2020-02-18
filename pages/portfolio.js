@@ -44,6 +44,7 @@ class Portfolio extends Component {
 
     buyStock = (stock) => {
 
+        console.log(stock);
         fetch(`${API}/api/transactions`, {
             method: "POST",
             headers: {

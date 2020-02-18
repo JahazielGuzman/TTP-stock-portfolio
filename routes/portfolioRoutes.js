@@ -78,7 +78,7 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
 
         user.save((err) => {
             if (err)
-                return res.status(400).json({success: false, message: err});
+                return res.status(400).json({success: false, message: "user save error"});
         });
     
         // return open price for most recent data
@@ -87,7 +87,7 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
 
     catch(err) {
 
-        res.status(400).json({success: false, message: err});
+        res.status(400).json({success: false, message: "unknown error"});
     }
 });
 
