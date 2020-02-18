@@ -6,13 +6,15 @@ const authRoutes = express.Router();
 
 authRoutes.post('/register', (req, res) => {
 
-    const {email, password} = req.body;
+
+    const {name, email, password} = req.body;
     
     if(!email || !password) {
         res.json({success: false, message: 'Please enter an email and password'});
     } else {
 
         const newUser = new User({
+            name,
             email,
             password
         });
@@ -31,7 +33,10 @@ authRoutes.post('/register', (req, res) => {
 
                 }
             }
-            return res.json({success: true, message: `Successfully created new user`});
+
+        const token = JWT.sign({_id: newUser._id}, process.env.JWT_SECRET);
+
+        return res.status(200).json({success: true, token: "Bearer " + token})   
             
         })
     }
