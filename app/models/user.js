@@ -4,7 +4,10 @@ const bcrypt = require('bcrypt');
 // User schema
 
 const UserSchema = new mongoose.Schema({
-
+    name: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         lowercase: true,
@@ -62,7 +65,7 @@ UserSchema.methods.buyStock = function(ticker, quantity, price) {
     if (cost < this.balance) {
         
         this.balance -= cost;
-        this.stocks.push({ticker, quantity, cost});
+        this.stocks.push({ticker, quantity, price});
     }
 
     else {
