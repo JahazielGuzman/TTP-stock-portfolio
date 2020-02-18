@@ -19,7 +19,9 @@ class Transactions extends Component {
 
         const router = Router;
 
-        if (!localStorage.getItem('auth_token').includes("Bearer")) {
+        const authToken = localStorage.getItem('auth_token');
+
+        if (!authToken && !authToken.includes("Bearer")) {
 
             router.push('/login');
         }
@@ -29,7 +31,7 @@ class Transactions extends Component {
             fetch(`${API}/api/transactions`, {
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": localStorage.getItem('auth_token')
+                    "Authorization": authToken
                 }
             })
             .then(res => res.json())

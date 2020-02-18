@@ -20,7 +20,9 @@ class Register extends Component {
 
     componentDidMount = () => {
 
-        if (localStorage.getItem('auth_token').includes("Bearer")) {
+        const authToken = localStorage.getItem('auth_token');
+
+        if (authToken && authToken.includes("Bearer")) {
 
             Router.push('/portfolio');
         }

@@ -19,8 +19,10 @@ export default class Login extends Component {
     }
     
     componentDidMount = () => {
+
+        const authToken = localStorage.getItem('auth_token');
         
-        if (localStorage.getItem('auth_token').includes("Bearer")) {
+        if (authToken && authToken.includes("Bearer")) {
             
             Router.push('/portfolio');
         }
@@ -60,7 +62,7 @@ export default class Login extends Component {
 
         return (
           <div className="Login">
-            {this.state.errors ? <div style={{color: red}}>{this.state.errors}</div> : ""}
+            {this.state.errors ? <div style={{color: "red"}}>{this.state.errors}</div> : ""}
             <form onSubmit={this.handleSubmit}>
               <FormGroup controlId="email" bsSize="large">
                 <FormLabel>Email</FormLabel>
