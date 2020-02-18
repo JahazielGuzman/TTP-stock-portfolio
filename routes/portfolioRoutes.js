@@ -20,7 +20,7 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
             data = await response.json();
             most_recent = Object.keys(data["Time Series (Daily)"])[0];
             value = parseFloat(data["Time Series (Daily)"][most_recent]["1. open"]);
-            stock.value = value * stock.quantity.toFixed(5);
+            stock.value = value * stock.quantity;
         }
 
         return res.status(200).send({success: true, portfolio: portfolio});
