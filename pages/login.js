@@ -22,7 +22,7 @@ export default class Login extends Component {
         
         if (localStorage.getItem('auth_token')) {
             
-            router.push('/portfolio');
+            Router.push('/portfolio');
         }
     }
 

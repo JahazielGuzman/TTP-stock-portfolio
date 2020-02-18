@@ -5,7 +5,7 @@ import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import Portfolio from "./portfolio";
 const API = process.env.REACT_APP_BACKEND;
 
-export default class Login extends Component {
+class Register extends Component {
 
     
     state = {
@@ -88,3 +88,5 @@ export default class Login extends Component {
     }
 
 }
+
+export default Register;
