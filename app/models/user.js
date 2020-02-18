@@ -60,7 +60,7 @@ UserSchema.methods.transactions = function() {
 
 UserSchema.methods.buyStock = function(ticker, quantity, price) {
 
-    const cost = quantity.toFixed(5) * price;
+    const cost = quantity * price;
 
     if (cost < this.balance) {
         
