@@ -9,7 +9,8 @@ const API = process.env.REACT_APP_BACKEND;
 class Portfolio extends Component {
 
     state = {
-        portfolio: []
+        portfolio: [],
+        error: ""
     }
 
     constructor(props) {
@@ -59,7 +60,30 @@ class Portfolio extends Component {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
+
+            if (data.success) {
+
+                const {ticker, quantity, price} = data.stock;
+                const matchingStock = this.state.portfolio.find(s => s.ticker == ticker);
+
+                if (matchingStock)
+                    this.setState({
+                            portfolio: [
+                                {ticker, quantity: matchingStock.quantity + quantity, price},
+                                ...this.state.portfolio.filter(s => s.ticker != ticker)
+                            ]
+                        });
+                else {
+                    this.setState({
+                        portfolio: [...this.state.portfolio, {ticker, quantity, price}]
+                    })
+                }
+                this.setState({error: ""})
+                
+            }
+            else {
+                this.setState({error: data.message});
+            }
         });  
     }
 
@@ -82,6 +106,7 @@ class Portfolio extends Component {
                         </ListGroup>
                         </Col>
                         <Col lg={6}>
+                            {this.state.error ? <p class="help is-danger">{this.state.error}</p> : ""}
                             <Purchaser buyStock={this.buyStock} />
                         </Col>
                     </Row>
