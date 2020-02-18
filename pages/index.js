@@ -9,8 +9,4 @@ const Index = (props) => (
     </Layout>
 );
 
-// Index.getInitialProps = async function () {
-
-// }
-
 export default Index;
