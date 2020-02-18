@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Router from "next/router";
 import fetch from 'isomorphic-unfetch';
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import Portfolio from "./Portfolio";
+import Portfolio from "./portfolio";
 const API = process.env.REACT_APP_BACKEND;
 
 export default class Login extends Component {
