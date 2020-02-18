@@ -65,7 +65,7 @@ UserSchema.methods.buyStock = function(ticker, quantity, price) {
     if (cost < this.balance) {
         
         this.balance -= cost;
-        this.stocks.push({ticker, quantity, price});
+        this.stocks.push({ticker: ticker.toUpperCase(), quantity, price});
     }
 
     else {

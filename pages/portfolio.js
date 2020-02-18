@@ -20,7 +20,7 @@ class Portfolio extends Component {
 
         const router = Router;
 
-        if (!localStorage.getItem('auth_token')) {
+        if (!localStorage.getItem('auth_token').includes("Bearer")) {
 
             router.push('/login');
         }
