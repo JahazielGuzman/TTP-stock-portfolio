@@ -46,7 +46,8 @@ class Portfolio extends Component {
             method: "POST",
             headers: {
                 "Accept": "application/json",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('auth_token')
             },
             body: JSON.stringify({
                 ticker: stock.ticker,
