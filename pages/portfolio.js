@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import Router from "next/router";
-import Fetch from "isomorphic-unfetch";
+import fetch from "isomorphic-unfetch";
 import Layout from "../components/Layout";
-import {Container, Col, ListGroup, Row } from "react-bootstrap";
 import Purchaser from "../components/Purchaser";
 const API = process.env.REACT_APP_BACKEND;
 
@@ -10,45 +9,62 @@ class Portfolio extends Component {
 
     state = {
         portfolio: [],
+        total: 0,
+        balance: -1,
+        bought: false,
         error: ""
     }
 
     constructor(props) {
         super(props);
     }
-
-    componentDidMount() {
-
+    
+    fetchPortfolio = () => {
+        
         const router = Router;
-
+    
         const authToken = localStorage.getItem('auth_token');
-
-        if (!authToken && !authToken.includes("Bearer")) {
-
+    
+        if (!authToken || !authToken.includes("Bearer")) {
+    
             router.push('/');
         }
         else {
             // get the portfolio for current user
-
             fetch(`${API}/api/portfolio`, {
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": localStorage.getItem('auth_token')
+                    "Authorization": authToken
                 }
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success)
-                    this.setState({portfolio: data.portfolio});
+                    this.setState({portfolio: data.portfolio, total: data.total, balance: data.balance.toFixed(2)});
                 else
                     this.setState({error: data.message});
             });     
+        }
+
+    }
+
+    componentDidMount() {
+
+        this.fetchPortfolio();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+
+        if (this.state.bought == true && prevState.bought == false) {
+
+            this.setState({bought: false});
+            this.fetchPortfolio();
         }
     }
 
     buyStock = (stock) => {
 
-        console.log(stock);
+
         fetch(`${API}/api/transactions`, {
             method: "POST",
             headers: {
@@ -65,55 +81,45 @@ class Portfolio extends Component {
         .then(data => {
 
             if (data.success) {
-
-                const {ticker, quantity, price} = data.stock;
-                const matchingStock = this.state.portfolio.find(s => s.ticker == ticker);
-
-                if (matchingStock)
-                    this.setState({
-                            portfolio: [
-                                {ticker, quantity: matchingStock.quantity + quantity, price},
-                                ...this.state.portfolio.filter(s => s.ticker != ticker)
-                            ]
-                        });
-                else {
-                    this.setState({
-                        portfolio: [...this.state.portfolio, {ticker, quantity, price}]
-                    })
-                }
-                this.setState({error: ""})
-                
+                this.setState({bought: true, error: ""})
             }
             else {
                 this.setState({error: data.message});
             }
-        });  
+        });
     }
 
     render() {
         return (
             <Layout>
-                <Container>
-                    <Row>
-                        <Col lg={6}>
-                        <ListGroup>
+                {this.state.error ? <h6 className="title is-6 help is-danger">{this.state.error}</h6> : ""}
+                <h1 className="title is-1">Portfolio {this.state.total ? `($${this.state.total.toFixed(2)})` : ""}</h1>
+                <div className="columns">
+                    <div className="column">
                             {
                                 this.state.portfolio.length > 0 ?
                                 this.state.portfolio.map(
-                                    stock => 
-                                    <ListGroup.Item>{`${stock.ticker} - ${stock.quantity} ${stock.value}`}</ListGroup.Item>
+                                    (stock, index) => 
+                                    <div className="columns" key={index}>
+                                        <div className="column portfolio-content is-9 is-size-4">{`${stock.ticker} - ${stock.quantity} Shares`}</div>
+                                        <div className="column portfolio-content is-3 is-size-4">{`$${stock.value.toFixed(2)}`}</div>
+                                    </div>
                                     )
-                                : 
-                                "No stocks yet"
-                            }
-                        </ListGroup>
-                        </Col>
-                        <Col lg={6}>
-                            {this.state.error ? <p class="help is-danger">{this.state.error}</p> : ""}
-                            <Purchaser buyStock={this.buyStock} />
-                        </Col>
-                    </Row>
-                </Container>
+                                    : 
+                                    "No stocks yet"
+                                }
+                    </div>
+                    <div className="column">
+                            <h1 className="title is-1">{this.state.balance >= 0 ? `Cash - $${this.state.balance}` : ""}</h1>
+                        
+                        <Purchaser buyStock={this.buyStock} />        
+                    </div>
+                </div>
+                <style jsx>{`
+                    .portfolio-content {
+                        border-bottom: 1px solid black;
+                    }
+                `}</style>
             </Layout>
         );
     }

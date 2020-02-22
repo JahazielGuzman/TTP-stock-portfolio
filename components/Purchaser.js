@@ -2,46 +2,62 @@ import React, { Component } from "react";
 import Router from "next/router";
 import Fetch from "isomorphic-unfetch";
 import Layout from "../components/Layout";
-import {Container, Col, ListGroup, Row, Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 const API = process.env.REACT_APP_BACKEND;
 
 class Purchaser extends Component {
 
-    state = {
+    initialState = {
         ticker: "",
         quantity: ""
     }
 
     constructor(props) {
         super(props);
+
+        this.state = {...this.initialState};
     }
 
     render() {
         return(
-            <div className="buy-stock">
+            <div className="buy-stock box">
                 <form 
                     onSubmit={e => {
                         e.preventDefault();
-                        this.props.buyStock(this.state)
+                        this.props.buyStock(this.state);
+                        this.setState({...this.initialState});
+                        this.refs.ticker = "";
+                        this.refs.quantity = "";
                     }
                 }>
-                    <FormGroup controlId="ticker" bsSize="large">
-                        <FormLabel>Ticker</FormLabel>
-                        <FormControl
-                        onChange={e => this.setState({ticker: e.target.value})}
-                        type="text"
-                        />
-                    </FormGroup>
-                    <FormGroup controlId="quantity" bsSize="large">
-                        <FormLabel>Quantity</FormLabel>
-                        <FormControl
-                        onChange={e => this.setState({quantity: e.target.value})}
-                        type="number"
-                        />
-                    </FormGroup>
-                    <Button block bsSize="large" type="submit" >
-                        Buy
-                    </Button>
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                ref="ticker"
+                                onChange={e => this.setState({ticker: e.target.value})}
+                                className="input" 
+                                type="text" 
+                                name="ticker" 
+                                placeholder="Ticker"
+                            />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                ref="quantity"
+                                onChange={e => this.setState({quantity: parseInt(e.target.value)})}
+                                className="input" 
+                                type="text"
+                                name="quantity"
+                                placeholder="Qty"
+                            />
+                        </div>
+                    </div>
+                    <div className="field is-grouped">
+                        <div className="control">
+                            <button type="submit" className="button is-link">Buy</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         );

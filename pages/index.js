@@ -64,7 +64,7 @@ export default class Index extends Component {
           <div className="Login">
             {this.state.errors ? <div style={{color: "red"}}>{this.state.errors}</div> : ""}
             <form onSubmit={this.handleSubmit}>
-              <FormGroup controlId="email" bsSize="large">
+              <FormGroup controlId="email" >
                 <FormLabel>Email</FormLabel>
                 <FormControl
                   autoFocus
@@ -72,14 +72,14 @@ export default class Index extends Component {
                   onChange={e => this.setState({email: e.target.value})}
                 />
               </FormGroup>
-              <FormGroup controlId="password" bsSize="large">
+              <FormGroup controlId="password">
                 <FormLabel>Password</FormLabel>
                 <FormControl
                   onChange={e => this.setState({password: e.target.value})}
                   type="password"
                 />
               </FormGroup>
-              <Button block bsSize="large" type="submit" >
+              <Button block type="submit" >
                 Login
               </Button>
             </form>

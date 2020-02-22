@@ -11,8 +11,15 @@ const Layout = (props) => (
             <meta charSet="utf-8" />
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css" />
         </Head>
-        <Navbar />
-        {props.children}
+        <section className="section">
+            <div className="container">
+                <Navbar />
+                {props.children}
+            </div>
+        </section>
+        <style jsx>{`
+            font-family: "Comic Sans MS", cursive, sans-serif;
+        `}</style>
     </div>
 );
 

@@ -45,23 +45,26 @@ class Transactions extends Component {
     render() {
         return (
             <Layout>
-                <Container>
-                    <Row>
-                        <Col lg={12}>
-                        <ListGroup>
-                            {
-                                this.state.transactions.length > 0 ?
-                                this.state.transactions.map(
-                                    stock => 
-                                    <ListGroup.Item>{`${stock.ticker} - ${stock.quantity} ${stock.price}`}</ListGroup.Item>
-                                )
-                                :
-                                "No transactions"
-                            }
-                        </ListGroup>
-                        </Col>
-                    </Row>
-                </Container>
+                <h1 className="title is-1">Transactions</h1>
+                {
+                    this.state.transactions.length > 0 ?
+                    this.state.transactions.map(
+                        (stock, index) =>
+                        <div className="columns" key={index}>
+                            <div className="column is-2 is-size-4">{`BUY (${stock.ticker})`}</div>
+                            <div className="column is-1 is-size-4">{`-`}</div>
+                            <div className="column is-3 is-size-4">{`${stock.quantity} Shares @ ${stock.price}`}</div>
+                        </div>
+                    )
+                    :
+                    "No transactions"
+                }
+                <style jsx>{`
+
+                    .column {
+                        border-bottom: 1px solid black;
+                    }
+                `}</style>
             </Layout>
         );
     }

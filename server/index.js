@@ -29,7 +29,10 @@ app
         server.use('/api/auth', authRoutes);
         server.use('/api/', portfolioRoutes);
 
-        mongoose.connect(process.env.MONGO_URL,  {useNewUrlParser: true, useUnifiedTopology: true});
+        mongoose.connect(dev ? process.env.MONGO_URI : process.env.MONGO_URL,  {
+            useNewUrlParser: true, 
+            useUnifiedTopology: true}
+        );
 
 
         server.get('/api', (req, res) => {

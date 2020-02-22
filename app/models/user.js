@@ -2,6 +2,24 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 // User schema
+const StockSchema = new mongoose.Schema({
+    ticker: {
+        type: String,
+        uppercase: true,
+        required: true
+    },
+
+    quantity: {
+
+        type: Number,
+        required: true
+    },
+
+    price: {
+        type: Number,
+        required: true
+    }
+})
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -23,7 +41,7 @@ const UserSchema = new mongoose.Schema({
         default: 5000.00
     },
     stocks: {
-        type: Array,
+        type: [StockSchema],
         default: []
     }
 });
@@ -65,7 +83,7 @@ UserSchema.methods.buyStock = function(ticker, quantity, price) {
     if (cost < this.balance) {
         
         this.balance -= cost;
-        this.stocks.push({ticker: ticker.toUpperCase(), quantity, price});
+        this.stocks.push({ticker, quantity, price});
     }
 
     else {

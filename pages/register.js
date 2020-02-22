@@ -58,7 +58,7 @@ class Register extends Component {
         return (
           <div className="Login">
             <form onSubmit={this.handleSubmit}>
-              <FormGroup controlId="name" bsSize="large">
+              <FormGroup controlId="name">
                 <FormLabel>Name</FormLabel>
                 <FormControl
                   autoFocus
@@ -66,7 +66,7 @@ class Register extends Component {
                   onChange={e => this.setState({name: e.target.value})}
                 />
               </FormGroup>
-              <FormGroup controlId="email" bsSize="large">
+              <FormGroup controlId="email">
                 <FormLabel>Email</FormLabel>
                 <FormControl
                   autoFocus
@@ -74,14 +74,14 @@ class Register extends Component {
                   onChange={e => this.setState({email: e.target.value})}
                 />
               </FormGroup>              
-              <FormGroup controlId="password" bsSize="large">
+              <FormGroup controlId="password">
                 <FormLabel>Password</FormLabel>
                 <FormControl
                   onChange={e => this.setState({password: e.target.value})}
                   type="password"
                 />
               </FormGroup>
-              <Button block bsSize="large" type="submit" >
+              <Button block type="submit" >
                 Login
               </Button>
             </form>

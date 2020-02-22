@@ -11,25 +11,40 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
     
     const user = await User.findOne({email: req.user.email});
     const portfolio = user.portfolio();
-    let response, data, value, most_recent;
+    let response, data, value, most_recent, total = 0;
     try {
         
         for (stock of portfolio) {
-    
+            
+            await waitMilliSeconds(300);
             response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock.ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`);
             data = await response.json();
+
+            if (data["Error Message"])
+                return res.status(404).send({success: false, message: "Ticker was invalid"});
+            if (data["Note"])
+                return res.status(404).send({success: false, message: "Too many requests to vantage API, please wait 1 minutes and refresh the page."});
+
             most_recent = Object.keys(data["Time Series (Daily)"])[0];
             value = parseFloat(data["Time Series (Daily)"][most_recent]["1. open"]);
             stock.value = value * stock.quantity;
+            total += stock.value;
         }
 
-        return res.status(200).send({success: true, portfolio: portfolio});
+        return res.status(200).send({success: true, portfolio, total, balance: user.balance });
     }
     catch (err) {
         
         res.status(400).send({success: false, message: err.message});
     }
     
+});
+
+portfolioRoutes.get('/stats', passport.authenticate('jwt', {session: false}), async (req, res) => {
+
+    const user = await User.findOne({email: req.user.email});
+
+
 });
 
 /* show all of the users transactions */
@@ -58,9 +73,10 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
 
         if (!ticker || !quantity)
             return res.status(404).send({success: false});
-            
+
             const user = await User.findOne({email: req.user.email});
-            
+
+            await waitMilliSeconds(300);
             const STOCK_API = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`;
             
             const response = await fetch(STOCK_API);
@@ -68,6 +84,8 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
             
         if (data["Error Message"])
             return res.status(404).send({success: false, message: "Ticker was invalid"});
+        if (data["Note"])
+            return res.status(404).send({success: false, message: "Too many requests to vantage API, please wait 1 minutes and refresh the page."});
 
     
         // get most recent date
@@ -90,5 +108,11 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
         res.status(400).json({success: false, message: err.message});
     }
 });
+
+function waitMilliSeconds(x) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, x)
+    })
+}
 
 module.exports = portfolioRoutes;
