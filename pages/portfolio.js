@@ -89,6 +89,17 @@ class Portfolio extends Component {
         });
     }
 
+    getPerformance(performance) {
+        switch(performance) {
+            case "ls":
+                return "has-text-warning"
+            case "gt":
+                return "has-text-success"
+            case "eq":
+                return "has-text-grey"
+        }
+    }
+
     render() {
         return (
             <Layout>
@@ -100,7 +111,9 @@ class Portfolio extends Component {
                                 this.state.portfolio.length > 0 ?
                                 this.state.portfolio.map(
                                     (stock, index) => 
-                                    <div className="columns" key={index}>
+                                    <div 
+                                        className={`columns ${this.getPerformance(stock.performance)}`}
+                                        key={index}>
                                         <div className="column portfolio-content is-9 is-size-4">{`${stock.ticker} - ${stock.quantity} Shares`}</div>
                                         <div className="column portfolio-content is-3 is-size-4">{`$${stock.value.toFixed(2)}`}</div>
                                     </div>
