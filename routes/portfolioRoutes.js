@@ -11,24 +11,47 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
     
     const user = await User.findOne({email: req.user.email});
     const portfolio = user.portfolio();
-    let response, data, value, most_recent, total = 0;
+    let response, current, daily_recent, day_open_index, current_day, most_recent, current_value, daily_value, total = 0;
+    
     try {
-        
+    
         for (stock of portfolio) {
             
             await waitMilliSeconds(300);
-            response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock.ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`);
-            data = await response.json();
 
-            if (data["Error Message"])
+            // get the most recent 5-min data for the ticker
+            response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stock.ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`);
+            current = await response.json();
+            
+            if (current["Error Message"] )
                 return res.status(404).send({success: false, message: "Ticker was invalid"});
-            if (data["Note"])
+            if (current["Note"])
                 return res.status(404).send({success: false, message: "Too many requests to vantage API, please wait 1 minutes and refresh the page."});
+            
+            // store all keys for the time series
+            time_intervals = Object.keys(current["Time Series (5min)"]);
+            // get the most recent time interval
+            most_recent = time_intervals[0];
+            // get the current day as a string
+            current_day = most_recent.split(' ')[0];
+            // get the last key that is in the current day
+            day_open_index = time_intervals.map(current => current.split(' ')[0]).lastIndexOf(current_day);
+            // use the above index to get the first key of the day
+            daily_recent = time_intervals[day_open_index];
 
-            most_recent = Object.keys(data["Time Series (Daily)"])[0];
-            value = parseFloat(data["Time Series (Daily)"][most_recent]["1. open"]);
-            stock.value = value * stock.quantity;
+            current_value = parseFloat(current["Time Series (5min)"][most_recent]["1. open"]);
+            daily_value = parseFloat(current["Time Series (5min)"][daily_recent]["1. open"]);
+            
+            // calculate the value of the stock based on price and quantity
+            stock.value = current_value * stock.quantity;
             total += stock.value;
+
+            // set ls, gt, or eq based on if current value is less than, greater or equal to daily opening price
+            if ((current_value - daily_value) < 0.0001)
+                stock.performance = (current_value < daily_value) ? "ls" : "gt";
+            else {
+                stock.performance = "eq";
+            }
         }
 
         return res.status(200).send({success: true, portfolio, total, balance: user.balance });
