@@ -76,6 +76,10 @@ UserSchema.methods.transactions = function() {
     return this.stocks;
 }
 
+/* If we can afford the stock then add it to our stocks array and lower our balace
+    Otherwise return appropriate error message
+*/
+
 UserSchema.methods.buyStock = function(ticker, quantity, price) {
 
     const cost = quantity * price;
@@ -91,6 +95,10 @@ UserSchema.methods.buyStock = function(ticker, quantity, price) {
     }
 }
 
+/*
+    take our stocks array which holds our transactions and reduce it into
+    a unique set of tickers and accumulated quantities over all transactions for each ticker
+*/
 UserSchema.methods.portfolio = function() {
 
     const portfolio = {};

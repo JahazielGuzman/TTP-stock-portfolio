@@ -15,6 +15,9 @@ class Transactions extends Component {
         super(props);
     }
 
+    /*
+        Do a simply fetch of all the users transactions and set in state to render
+     */
     componentDidMount() {
 
         const router = Router;

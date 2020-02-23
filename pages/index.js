@@ -28,7 +28,10 @@ export default class Index extends Component {
         }
     }
 
-
+    /*
+      Handle when the user logs in and if we get a jwt token store it in
+      localstorage and reroute to portfolio page 
+    */
     handleSubmit = (e) => {
 
         e.preventDefault();

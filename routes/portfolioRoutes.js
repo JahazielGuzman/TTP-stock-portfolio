@@ -7,6 +7,11 @@ const _ = require('lodash');
 
 const portfolioRoutes = express.Router();
 
+/* 
+    This route is fired when user is on /portfolio page.
+    We get the 5 min time series for the ticker user has submitted.
+    We use the most recent value to calculate price * quantity and also see how it performed compared to days open price
+*/
 portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false}), async (req, res) => {
     
     const user = await User.findOne({email: req.user.email});
@@ -47,9 +52,10 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
             total += stock.value;
 
             // set ls, gt, or eq based on if current value is less than, greater or equal to daily opening price
-            if ((current_value - daily_value) < 0.0001)
+            if ((current_value - daily_value) > 0.0001)
                 stock.performance = (current_value < daily_value) ? "ls" : "gt";
             else {
+                // values to close to within 0.0001
                 stock.performance = "eq";
             }
         }
@@ -61,13 +67,6 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
         res.status(400).send({success: false, message: err.message});
     }
     
-});
-
-portfolioRoutes.get('/stats', passport.authenticate('jwt', {session: false}), async (req, res) => {
-
-    const user = await User.findOne({email: req.user.email});
-
-
 });
 
 /* show all of the users transactions */
@@ -95,16 +94,16 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
     try {
 
         if (!ticker || !quantity)
-            return res.status(404).send({success: false});
+            return res.status(404).send({success: false, message: "Ticker and Quantity values are missing"});
 
-            const user = await User.findOne({email: req.user.email});
+        const user = await User.findOne({email: req.user.email});
 
-            await waitMilliSeconds(300);
-            const STOCK_API = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`;
-            
-            const response = await fetch(STOCK_API);
-            const data = await response.json();
-            
+        await waitMilliSeconds(300);
+        const STOCK_API = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`;
+        
+        const response = await fetch(STOCK_API);
+        const data = await response.json();
+        
         if (data["Error Message"])
             return res.status(404).send({success: false, message: "Ticker was invalid"});
         if (data["Note"])

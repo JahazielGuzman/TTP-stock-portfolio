@@ -19,6 +19,11 @@ class Portfolio extends Component {
         super(props);
     }
     
+    /* 
+        Fetch portfolio data for this api,
+        this sets the portfolio array when each ticker appears once,
+        also get the total value of all stocks and the current users balance which we will render later
+    */
     fetchPortfolio = () => {
         
         const router = Router;
@@ -52,7 +57,12 @@ class Portfolio extends Component {
 
         this.fetchPortfolio();
     }
-
+    
+    /*
+        bought state variable is false after everytime we fetch portfolio data.
+        If we have not fetched portfolio data and we just bought something, lets fetch
+        the data and set bought to false so this update does not create an infiinite loop
+    */
     componentDidUpdate(prevProps, prevState) {
 
         if (this.state.bought == true && prevState.bought == false) {
@@ -62,6 +72,12 @@ class Portfolio extends Component {
         }
     }
 
+    /* 
+        Post the ticker and quantity that the user wants to purchase
+        to POST api/transctions endpoint
+        return success boolean and set a bought boolean so we update the
+        portfolio on page
+    */
     buyStock = (stock) => {
 
 
@@ -89,10 +105,14 @@ class Portfolio extends Component {
         });
     }
 
+    /* 
+        Get the performance indicator for everystock and return the appropriate text
+        color for that stock to appear in
+    */
     getPerformance(performance) {
         switch(performance) {
             case "ls":
-                return "has-text-warning"
+                return "has-text-danger"
             case "gt":
                 return "has-text-success"
             case "eq":
@@ -118,7 +138,7 @@ class Portfolio extends Component {
                                         <div className="column portfolio-content is-3 is-size-4">{`$${stock.value.toFixed(2)}`}</div>
                                     </div>
                                     )
-                                    : 
+                                    :
                                     "No stocks yet"
                                 }
                     </div>
