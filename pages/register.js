@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Router from "next/router";
 import fetch from 'isomorphic-unfetch';
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import Portfolio from "./portfolio";
+import Layout from "../components/Layout";
+import Link from "next/link";
 const API = process.env.REACT_APP_BACKEND;
 
 class Register extends Component {
@@ -12,6 +12,7 @@ class Register extends Component {
         name: "",
         email: "",
         password: "",
+        errors: ""
     }
 
     constructor(props) {
@@ -48,44 +49,66 @@ class Register extends Component {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    Router.push('/');
+                    if (data.success) {
+                      Router.push('/');
+                    }
+                    else {
+                      this.setState({errors: data.message});
+                    }
                 });       
     }
 
     render() {
 
-
         return (
-          <div className="Login">
-            <form onSubmit={this.handleSubmit}>
-              <FormGroup controlId="name">
-                <FormLabel>Name</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  onChange={e => this.setState({name: e.target.value})}
-                />
-              </FormGroup>
-              <FormGroup controlId="email">
-                <FormLabel>Email</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="email"
-                  onChange={e => this.setState({email: e.target.value})}
-                />
-              </FormGroup>              
-              <FormGroup controlId="password">
-                <FormLabel>Password</FormLabel>
-                <FormControl
-                  onChange={e => this.setState({password: e.target.value})}
-                  type="password"
-                />
-              </FormGroup>
-              <Button block type="submit" >
-                Login
-              </Button>
-            </form>
-          </div>
+          <Layout>
+            <h1 className="title is-1">Register</h1>
+            <div className="Register box">
+                {this.state.errors ? <div style={{color: "red"}}>{this.state.errors}</div> : ""}
+                <form onSubmit={this.handleSubmit}>              
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                onChange={e => this.setState({name: e.target.value})}
+                                className="input"
+                                type="text" 
+                                name="name" 
+                                placeholder="name"
+                            />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                onChange={e => this.setState({email: e.target.value})}
+                                className="input"
+                                type="email" 
+                                name="email" 
+                                placeholder="e-mail"
+                            />
+                        </div>
+                    </div>  
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                ref="quantity"
+                                onChange={e => this.setState({password: e.target.value})}
+                                className="input" 
+                                type="password"
+                                name="password"
+                                placeholder="password"
+                            />
+                        </div>
+                    </div>
+                    <div className="field is-grouped">
+                        <div className="control">
+                            <button type="submit" className="button is-link">Register</button>
+                        </div>
+                    </div>
+                </form>
+                <Link href="/"><a>Login</a></Link>
+            </div>
+          </Layout>
         );
     }
 

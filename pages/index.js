@@ -3,6 +3,7 @@ import Router from "next/router";
 import fetch from 'isomorphic-unfetch';
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import Link from "next/link";
+import Layout from "../components/Layout";
 const API = process.env.REACT_APP_BACKEND;
 
 export default class Index extends Component {
@@ -54,40 +55,54 @@ export default class Index extends Component {
 
                 localStorage.setItem('auth_token', data.token);
                 Router.push('/portfolio');
-            }
-            else
-                this.setState({errors: data.message});
-
-        });       
-    }
-
-    render() {
+              }
+              else
+              this.setState({errors: data.message});
+              
+            });       
+          }
+          
+          render() {
+            
 
         return (
-          <div className="Login">
-            {this.state.errors ? <div style={{color: "red"}}>{this.state.errors}</div> : ""}
-            <form onSubmit={this.handleSubmit}>
-              <FormGroup controlId="email" >
-                <FormLabel>Email</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="email"
-                  onChange={e => this.setState({email: e.target.value})}
-                />
-              </FormGroup>
-              <FormGroup controlId="password">
-                <FormLabel>Password</FormLabel>
-                <FormControl
-                  onChange={e => this.setState({password: e.target.value})}
-                  type="password"
-                />
-              </FormGroup>
-              <Button block type="submit" >
-                Login
-              </Button>
-            </form>
-            <Link href="/register"> Signup </Link>
-          </div>
+          <Layout>
+            <h1 className="title is-1">Sign in</h1>
+            <div className="Signin box">
+                {this.state.errors ? <div style={{color: "red"}}>{this.state.errors}</div> : ""}
+                <form onSubmit={this.handleSubmit}>
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                onChange={e => this.setState({email: e.target.value})}
+                                className="input"
+                                type="email" 
+                                name="email" 
+                                placeholder="e-mail"
+                            />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <div className="control">
+                            <input 
+                                ref="quantity"
+                                onChange={e => this.setState({password: e.target.value})}
+                                className="input" 
+                                type="password"
+                                name="password"
+                                placeholder="password"
+                            />
+                        </div>
+                    </div>
+                    <div className="field is-grouped">
+                        <div className="control">
+                            <button type="submit" className="button is-link">Sign in</button>
+                        </div>
+                    </div>
+                </form>
+                <Link href="/register"><a>Register</a></Link>
+            </div>
+          </Layout>
         );
     }
 

@@ -52,7 +52,7 @@ portfolioRoutes.get('/portfolio', passport.authenticate('jwt', {session: false})
             total += stock.value;
 
             // set ls, gt, or eq based on if current value is less than, greater or equal to daily opening price
-            if ((current_value - daily_value) > 0.0001)
+            if (Math.abs(current_value - daily_value) > 0.0003)
                 stock.performance = (current_value < daily_value) ? "ls" : "gt";
             else {
                 // values to close to within 0.0001
@@ -98,7 +98,6 @@ portfolioRoutes.post('/transactions', passport.authenticate('jwt', {session: fal
 
         const user = await User.findOne({email: req.user.email});
 
-        await waitMilliSeconds(300);
         const STOCK_API = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${process.env.STOCK_API_KEY}`;
         
         const response = await fetch(STOCK_API);
